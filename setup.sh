@@ -57,7 +57,7 @@ else
 fi
 
 # Install Python packages
-pip3 install flask pyfiglet requests termcolor, tabulate
+pip3 install flask pyfiglet requests termcolor tabulate
 
 # Print Banner using figlet
 echo "Banner:"
